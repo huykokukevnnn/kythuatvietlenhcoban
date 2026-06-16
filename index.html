@@ -43,26 +43,7 @@
                 <p class="text-[10px] text-violet-500 font-bold uppercase tracking-wider">Phiên bản học sinh cấp 2</p>
             </div>
         </div>
-        <div class="flex items-center gap-3">
-            <button id="settings-btn" class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-slate-200 shadow-sm hover:border-violet-300 hover:text-violet-600 transition-colors text-slate-500 font-bold text-xs" title="Tích hợp AI thật (ChatGPT/Gemini)">
-                <i class="fa-solid fa-microchip"></i> Bật AI Thật
-            </button>
-        </div>
     </header>
-
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-2xl p-6 w-96 shadow-2xl border border-slate-100 transform transition-all">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-header text-lg text-slate-800"><i class="fa-solid fa-microchip text-violet-500 mr-2"></i>Cấu hình AI Thật</h3>
-                <button id="close-settings" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p class="text-xs text-slate-500 mb-4 leading-relaxed">Theo mặc định, ứng dụng dùng <strong>AI Giả Lập</strong> đọc từ khóa. Nếu muốn AI trả lời thông minh như thật, bạn hãy nhập mã <strong>Gemini API Key</strong> (tạo miễn phí ở Google) vào đây.</p>
-            <input type="password" id="api-key-input" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm mb-4 focus:ring-2 focus:ring-violet-400 focus:outline-none" placeholder="Nhập API Key tại đây...">
-            <button id="save-settings" class="w-full bg-violet-500 hover:bg-violet-600 text-white font-bold py-2.5 rounded-lg transition-colors">Lưu Cài Đặt (Lưu Offline)</button>
-            <p class="text-[10px] text-slate-400 mt-3 text-center">Mã sẽ chỉ lưu trên trình duyệt của bạn, hoàn toàn bảo mật.</p>
-        </div>
-    </div>
 
     <!-- Main Workspace -->
     <main class="flex-1 flex flex-col lg:flex-row p-4 gap-5 min-h-0">
@@ -109,7 +90,7 @@
                 <h2 class="font-header text-[15px] text-slate-700 flex items-center gap-2">
                     <i class="fa-solid fa-sparkles text-fuchsia-500 animate-pulse"></i> Phản Hồi Từ AI
                 </h2>
-                <span id="ai-status-badge" class="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-1 rounded-md border border-slate-200">🤖 AI Giả Lập</span>
+                <span id="ai-status-badge" class="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-1 rounded-md border border-slate-200">🤖 Đang Sẵn Sàng</span>
             </div>
 
             <!-- Output Area -->
@@ -202,45 +183,6 @@
             basic: 'Mức độ: Cơ Bản',
             standard: 'Mức độ: Tiêu Chuẩn'
         };
-
-        // --- Settings Modal Logic ---
-        const settingsBtn = document.getElementById('settings-btn');
-        const settingsModal = document.getElementById('settings-modal');
-        const closeSettings = document.getElementById('close-settings');
-        const saveSettings = document.getElementById('save-settings');
-        const apiKeyInput = document.getElementById('api-key-input');
-        const aiStatusBadge = document.getElementById('ai-status-badge');
-
-        function updateAiStatus() {
-            if (localStorage.getItem('gemini_api_key')) {
-                aiStatusBadge.innerHTML = '⚡ AI Thật Đang Bật';
-                aiStatusBadge.className = 'text-[10px] font-bold uppercase tracking-wider bg-violet-100 text-violet-600 px-2 py-1 rounded-md border border-violet-200';
-            } else {
-                aiStatusBadge.innerHTML = '🤖 AI Giả Lập';
-                aiStatusBadge.className = 'text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-1 rounded-md border border-slate-200';
-            }
-        }
-
-        settingsBtn.addEventListener('click', () => {
-            apiKeyInput.value = localStorage.getItem('gemini_api_key') || '';
-            settingsModal.classList.remove('hidden');
-        });
-
-        closeSettings.addEventListener('click', () => settingsModal.classList.add('hidden'));
-
-        saveSettings.addEventListener('click', () => {
-            const key = apiKeyInput.value.trim();
-            if (key) {
-                localStorage.setItem('gemini_api_key', key);
-            } else {
-                localStorage.removeItem('gemini_api_key');
-            }
-            settingsModal.classList.add('hidden');
-            updateAiStatus();
-        });
-
-        updateAiStatus();
-        // ------------------------------
 
         function renderExercises() {
             const container = document.getElementById('exercise-buttons');
@@ -377,42 +319,42 @@
             aiOutput.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-violet-600 font-bold gap-3"><i class="fa-solid fa-circle-notch fa-spin text-3xl"></i> <span>AI đang phân tích và tạo kết quả...</span></div>`;
             document.getElementById('eval-empty').classList.remove('hidden');
 
-            // Simulate processing time
-            setTimeout(() => {
-                generateAndShowResponse(finalScore, feedback, activeInputs);
-            }, 800);
+            generateAndShowResponse(finalScore, feedback, activeInputs);
         });
 
         async function generateAndShowResponse(score, feedback, activeInputs) {
             // First, update the evaluation UI
             showEvaluation(score, feedback);
 
-            const apiKey = localStorage.getItem('gemini_api_key');
-            if (apiKey) {
-                // Call Real Gemini API
-                try {
-                    let promptString = `Bạn là một trợ lý AI phân tích ngôn ngữ. Dưới đây là câu lệnh prompt của người dùng (tập trung vào đối tượng học sinh lớp 8):\n`;
-                    activeInputs.forEach(inp => {
-                        promptString += `- Yêu cầu phần [${inp.label}]: "${state.inputs[inp.id] || ''}"\n`;
-                    });
-                    promptString += `Hãy viết một phản hồi thông minh, đúng yêu cầu định dạng ở trên, dựa trên nội dung được cung cấp. Không cần giải thích thêm.`;
-                    
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: promptString }] }] })
-                    });
-                    
-                    if (!res.ok) throw new Error('API Key không hợp lệ hoặc lỗi mạng');
-                    const data = await res.json();
-                    const aiText = data.candidates[0].content.parts[0].text;
-                    typeResponse(`[💡 Sinh bởi AI Thật - Gemini API]\n\n` + aiText);
-                } catch (e) {
-                    typeResponse(`[⚠️ Lỗi gọi AI Thật: ${e.message}]\nAI sẽ tự động chuyển về chế độ Giả Lập.\n\n` + generateSmartMockResponse(score));
+            try {
+                let promptString = `Bạn là một trợ lý AI phân tích ngôn ngữ. Dưới đây là câu lệnh prompt của người dùng (tập trung vào đối tượng học sinh lớp 8):\n`;
+                activeInputs.forEach(inp => {
+                    promptString += `- Yêu cầu phần [${inp.label}]: "${state.inputs[inp.id] || ''}"\n`;
+                });
+                promptString += `Hãy viết một phản hồi thông minh, đúng yêu cầu định dạng ở trên, dựa trên nội dung được cung cấp. Không cần giải thích thêm. Nếu đầu vào là trống hoặc không có ý nghĩa, hãy trả lời vui vẻ nhắc nhở người dùng nhập rõ hơn.`;
+                
+                // Call Serverless Function Vercel
+                const res = await fetch(`/api/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: promptString })
+                });
+                
+                const data = await res.json();
+                if (!res.ok || data.error) {
+                    throw new Error(data.error || 'Lỗi mạng');
                 }
-            } else {
-                // Use Smart Mock AI that reads inputs
-                typeResponse(generateSmartMockResponse(score));
+                
+                const aiText = data.text;
+                document.getElementById('ai-status-badge').innerHTML = '⚡ Đã Kết Nối AI';
+                document.getElementById('ai-status-badge').className = 'text-[10px] font-bold uppercase tracking-wider bg-violet-100 text-violet-600 px-2 py-1 rounded-md border border-violet-200';
+                
+                typeResponse(`[💡 Phản hồi từ AI Thật]\n\n` + aiText);
+            } catch (e) {
+                document.getElementById('ai-status-badge').innerHTML = '🤖 AI Giả Lập';
+                document.getElementById('ai-status-badge').className = 'text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-1 rounded-md border border-slate-200';
+                
+                typeResponse(`[⚠️ ${e.message}]\nAI tự động chuyển về chế độ Giả Lập. (Vui lòng điền GEMINI_API_KEY trong Vercel Environment Variables để dùng AI Thật).\n\n` + generateSmartMockResponse(score));
             }
         }
 
@@ -421,7 +363,7 @@
             const context = (state.inputs.context || '').trim();
             const format = (state.inputs.format || '').trim();
 
-            let res = `[🤖 Chế độ AI Giả Lập]\n(Ứng dụng đang phản hồi dựa trên các từ khóa bạn nhập. Để trải nghiệm AI thật sự thông minh, hãy cấu hình API Key ở góc trên màn hình!)\n\n`;
+            let res = `[🤖 Chế độ AI Giả Lập]\n(Do chưa cài đặt API Key trên hệ thống Vercel. Phản hồi dưới đây được dựng tự động từ các từ khóa bạn đã gõ)\n\n`;
             
             if (score === 0) {
                 return res + `Bạn chưa nhập chữ nào cả, tôi không thể tưởng tượng ra kết quả được. Hãy điền chữ vào các ô trống nhé!`;
@@ -436,7 +378,7 @@
                 if (score <= 50) {
                     res += `⚠️ Vì lệnh của bạn khá ngắn, tôi chỉ có thể làm thử chung chung:\n👉 Đang thực hiện hành động "${task || '...'}" với đối tượng là "${context || '...'}".`;
                 } else {
-                    res += `✨ Kết quả phân tích:\nTôi đã hiểu bạn muốn "${task}". Liên quan đến "${context}", đây là một yêu cầu rất thú vị! (Đây là mô phỏng, nếu bạn dùng AI Thật, đoạn này sẽ là nội dung văn bản hoàn chỉnh).`;
+                    res += `✨ Kết quả phân tích:\nTôi đã hiểu bạn muốn "${task}". Liên quan đến "${context}", đây là một yêu cầu rất thú vị! (Đây là mô phỏng, nếu được cấu hình AI Thật, đoạn này sẽ là nội dung văn bản hoàn chỉnh do AI sinh ra).`;
                 }
             } else {
                 res += `- Nhiệm vụ cốt lõi: **${task || '(Trống)'}**\n`;
@@ -466,7 +408,6 @@
             aiOutput.appendChild(p);
             
             let i = 0;
-            // Type faster so kids don't get bored
             function typeChar() {
                 if(i < text.length) {
                     p.innerHTML = text.substring(0, i+1).replace(/\\n/g, '<br/>');
