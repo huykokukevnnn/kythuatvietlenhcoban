@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học Viện Prompt 🚀</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        header: ['Fredoka', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-header { font-family: 'Fredoka', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .typing-cursor::after { content: '|'; animation: blink 1s step-end infinite; color: #8b5cf6; }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+    
+    <!-- Header -->
+    <header class="h-[60px] shrink-0 bg-white/80 backdrop-blur-md border-b border-violet-100 px-6 flex items-center justify-between z-10 shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-xl flex items-center justify-center text-white text-xl shadow-md shadow-violet-200">🚀</div>
+            <div>
+                <h1 class="text-[18px] font-header font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 leading-tight tracking-wide">Học Viện Prompt</h1>
+                <p class="text-[10px] text-violet-500 font-bold uppercase tracking-wider">Phiên bản học sinh cấp 2</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button id="settings-btn" class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-slate-200 shadow-sm hover:border-violet-300 hover:text-violet-600 transition-colors text-slate-500 font-bold text-xs" title="Tích hợp AI thật (ChatGPT/Gemini)">
+                <i class="fa-solid fa-microchip"></i> Bật AI Thật
+            </button>
+        </div>
+    </header>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-2xl p-6 w-96 shadow-2xl border border-slate-100 transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-header text-lg text-slate-800"><i class="fa-solid fa-microchip text-violet-500 mr-2"></i>Cấu hình AI Thật</h3>
+                <button id="close-settings" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 mb-4 leading-relaxed">Theo mặc định, ứng dụng dùng <strong>AI Giả Lập</strong> đọc từ khóa. Nếu muốn AI trả lời thông minh như thật, bạn hãy nhập mã <strong>Gemini API Key</strong> (tạo miễn phí ở Google) vào đây.</p>
+            <input type="password" id="api-key-input" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm mb-4 focus:ring-2 focus:ring-violet-400 focus:outline-none" placeholder="Nhập API Key tại đây...">
+            <button id="save-settings" class="w-full bg-violet-500 hover:bg-violet-600 text-white font-bold py-2.5 rounded-lg transition-colors">Lưu Cài Đặt (Lưu Offline)</button>
+            <p class="text-[10px] text-slate-400 mt-3 text-center">Mã sẽ chỉ lưu trên trình duyệt của bạn, hoàn toàn bảo mật.</p>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 flex flex-col lg:flex-row p-4 gap-5 min-h-0">
+        
+        <!-- Left Panel: Input Area -->
+        <section class="flex-1 flex flex-col bg-white/95 rounded-3xl shadow-xl shadow-violet-200/50 border border-white overflow-hidden min-h-0 backdrop-blur-xl">
+            <!-- Mode Selector -->
+            <div class="p-4 border-b border-slate-100 shrink-0 bg-white">
+                <div class="bg-slate-100 p-1.5 rounded-xl flex gap-1 relative border border-slate-200">
+                    <button class="mode-btn flex-1 py-1.5 rounded-lg font-bold text-sm transition-all z-10 text-white bg-violet-500 shadow-md" data-mode="basic">Cơ Bản (2 phần)</button>
+                    <button class="mode-btn flex-1 py-1.5 rounded-lg font-bold text-sm transition-all z-10 text-slate-500 hover:text-slate-700 hover:bg-white/50" data-mode="standard">Tiêu Chuẩn (3 phần)</button>
+                </div>
+            </div>
+
+            <!-- Exercises -->
+            <div class="px-4 py-3 border-b border-slate-100 shrink-0 bg-white">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Chọn Đề Bài</h3>
+                    <span class="text-[10px] font-bold text-violet-500 uppercase tracking-wider" id="mode-label-text">Mức độ: Cơ Bản</span>
+                </div>
+                <div id="exercise-buttons" class="flex gap-2">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- Dynamic Inputs -->
+            <div id="input-container" class="flex-1 flex flex-col gap-3 p-4 min-h-0 bg-slate-50/50">
+                <!-- Injected by JS -->
+            </div>
+
+            <!-- Submit Button -->
+            <div class="p-4 border-t border-slate-100 shrink-0 bg-white">
+                <button id="submit-btn" class="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white font-header text-lg py-3 rounded-xl shadow-[0_8px_20px_-5px_rgba(168,85,247,0.4)] transform transition hover:-translate-y-0.5 active:translate-y-0.5 flex justify-center items-center gap-2">
+                    Gửi Cho AI Đánh Giá <i class="fa-solid fa-paper-plane text-sm ml-1"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Right Panel: Output & Evaluation -->
+        <section class="flex-1 flex flex-col bg-white/95 rounded-3xl shadow-xl shadow-violet-200/50 border border-white overflow-hidden min-h-0 relative backdrop-blur-xl">
+            
+            <!-- Output Header -->
+            <div class="h-12 border-b border-slate-100 shrink-0 flex items-center px-4 bg-white justify-between">
+                <h2 class="font-header text-[15px] text-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-sparkles text-fuchsia-500 animate-pulse"></i> Phản Hồi Từ AI
+                </h2>
+                <span id="ai-status-badge" class="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-1 rounded-md border border-slate-200">🤖 AI Giả Lập</span>
+            </div>
+
+            <!-- Output Area -->
+            <div id="ai-output" class="flex-[3] p-6 overflow-y-auto min-h-0 text-[15px] text-slate-700 leading-relaxed whitespace-pre-line custom-scrollbar bg-slate-50/50">
+                <div class="h-full flex flex-col items-center justify-center text-slate-400 space-y-3">
+                    <i class="fa-brands fa-bots text-6xl opacity-40 text-slate-300"></i>
+                    <p class="font-medium text-slate-500">Chọn đề bài và nhập lệnh để AI phản hồi dựa trên những gì bạn viết!</p>
+                </div>
+            </div>
+
+            <!-- Evaluation Panel -->
+            <div class="flex-[2] min-h-[220px] max-h-[300px] border-t border-slate-100 bg-white flex flex-col shrink-0 relative">
+                <div class="px-4 py-2 border-b border-slate-100 font-header text-[13px] text-slate-600 flex items-center gap-2 bg-slate-50/80 shrink-0">
+                    <i class="fa-solid fa-chart-pie text-violet-500"></i> Bảng Chấm Điểm Prompt
+                </div>
+                
+                <div class="flex-1 flex gap-4 p-4 min-h-0 relative overflow-hidden">
+                    <!-- Empty State overlay -->
+                    <div id="eval-empty" class="absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex flex-col items-center justify-center text-slate-400">
+                        <i class="fa-solid fa-clipboard-check text-4xl mb-2 opacity-40"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Chưa có kết quả phân tích</span>
+                    </div>
+
+                    <!-- Score Ring -->
+                    <div class="w-24 shrink-0 flex flex-col items-center justify-center">
+                        <div class="relative w-20 h-20 drop-shadow-sm">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#e2e8f0" stroke-width="8" />
+                                <circle id="score-ring" cx="50" cy="50" r="40" fill="transparent" stroke="#10b981" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="251.2" class="transition-all duration-1000 ease-out" stroke-linecap="round" />
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="score-text" class="font-header text-2xl font-bold text-slate-700">0</span>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-wide">Điểm Số</span>
+                    </div>
+                    
+                    <!-- Feedback details -->
+                    <div class="flex-1 flex flex-col min-h-0">
+                        <h3 class="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Nhận xét chi tiết:</h3>
+                        <ul id="feedback-list" class="space-y-3 text-[13px] text-slate-600 overflow-y-auto custom-scrollbar pr-2 flex-1 pb-2">
+                            <!-- Injected by JS -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        const inputDefinitions = {
+            task: { id: 'task', label: 'Nhiệm Vụ (Task)', placeholder: 'AI cần làm gì? VD: Lên thời gian biểu...', desc: 'Làm việc gì?', colors: { border: 'focus-within:border-emerald-400 focus-within:ring-emerald-400/30', dot: 'bg-emerald-500', bg: 'bg-emerald-50', text: 'text-emerald-700' } },
+            context: { id: 'context', label: 'Đầu Vào (Input)', placeholder: 'Cung cấp thông tin... VD: Học sinh lớp 8...', desc: 'Thông tin cơ sở?', colors: { border: 'focus-within:border-sky-400 focus-within:ring-sky-400/30', dot: 'bg-sky-500', bg: 'bg-sky-50', text: 'text-sky-700' } },
+            format: { id: 'format', label: 'Tiêu Chuẩn (Format)', placeholder: 'Kết quả trông như thế nào? VD: Dạng bảng, hài hước...', desc: 'Yêu cầu kết quả?', colors: { border: 'focus-within:border-fuchsia-400 focus-within:ring-fuchsia-400/30', dot: 'bg-fuchsia-500', bg: 'bg-fuchsia-50', text: 'text-fuchsia-700' } }
+        };
+
+        const modes = {
+            basic: [
+                {...inputDefinitions.task, label: 'Hành Động', desc: 'Làm việc gì?'}, 
+                {...inputDefinitions.context, label: 'Đối Tượng', desc: 'Làm với cái gì?'}
+            ],
+            standard: [
+                {...inputDefinitions.task, label: 'Nhiệm Vụ', desc: 'Làm việc gì?'}, 
+                {...inputDefinitions.context, label: 'Đầu Vào', desc: 'Thông tin cơ sở?'}, 
+                {...inputDefinitions.format, label: 'Tiêu Chuẩn', desc: 'Yêu cầu kết quả?'}
+            ]
+        };
+
+        const exercisesMap = {
+            basic: [
+                { id: 'b1', title: 'Đề 1', desc: 'Giải thích Hố đen vũ trụ', fullDesc: 'Nhờ AI giải thích khái niệm "Hố đen vũ trụ" sao cho dễ hiểu nhất.' },
+                { id: 'b2', title: 'Đề 2', desc: 'Tóm tắt Thỏ và Rùa', fullDesc: 'Nhờ AI tóm tắt ngắn gọn câu chuyện ngụ ngôn Thỏ và Rùa.' },
+                { id: 'b3', title: 'Đề 3', desc: 'Dịch thuật tiếng Anh', fullDesc: 'Nhờ AI dịch câu "Hello world" sang tiếng Việt.' }
+            ],
+            standard: [
+                { id: 's1', title: 'Đề 1', desc: 'Lên thực đơn bữa tối', fullDesc: 'Lên thực đơn bữa tối với trứng, cà chua. Yêu cầu: Nhanh gọn.' },
+                { id: 's2', title: 'Đề 2', desc: 'Review Trà Sữa', fullDesc: 'Viết bài review Trà sữa matcha trân châu đường đen. Yêu cầu: Ngôn ngữ Gen Z, hài hước, nhiều icon.' },
+                { id: 's3', title: 'Đề 3', desc: 'Từ vựng tiếng Anh', fullDesc: 'Tạo danh sách 5 từ vựng tiếng Anh chủ đề "Trường học" kèm giải nghĩa.' }
+            ]
+        };
+
+        const state = {
+            mode: 'basic',
+            exerciseId: 'b1',
+            inputs: {}
+        };
+
+        const modeLabels = {
+            basic: 'Mức độ: Cơ Bản',
+            standard: 'Mức độ: Tiêu Chuẩn'
+        };
+
+        // --- Settings Modal Logic ---
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettings = document.getElementById('close-settings');
+        const saveSettings = document.getElementById('save-settings');
+        const apiKeyInput = document.getElementById('api-key-input');
+        const aiStatusBadge = document.getElementById('ai-status-badge');
+
+        function updateAiStatus() {
+            if (localStorage.getItem('gemini_api_key')) {
+                aiStatusBadge.innerHTML = '⚡ AI Thật Đang Bật';
+                aiStatusBadge.className = 'text-[10px] font-bold uppercase tracking-wider bg-violet-100 text-violet-600 px-2 py-1 rounded-md border border-violet-200';
+            } else {
+                aiStatusBadge.innerHTML = '🤖 AI Giả Lập';
+                aiStatusBadge.className = 'text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-1 rounded-md border border-slate-200';
+            }
+        }
+
+        settingsBtn.addEventListener('click', () => {
+            apiKeyInput.value = localStorage.getItem('gemini_api_key') || '';
+            settingsModal.classList.remove('hidden');
+        });
+
+        closeSettings.addEventListener('click', () => settingsModal.classList.add('hidden'));
+
+        saveSettings.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim();
+            if (key) {
+                localStorage.setItem('gemini_api_key', key);
+            } else {
+                localStorage.removeItem('gemini_api_key');
+            }
+            settingsModal.classList.add('hidden');
+            updateAiStatus();
+        });
+
+        updateAiStatus();
+        // ------------------------------
+
+        function renderExercises() {
+            const container = document.getElementById('exercise-buttons');
+            container.innerHTML = '';
+            const currentExs = exercisesMap[state.mode];
+            
+            currentExs.forEach(ex => {
+                const isActive = state.exerciseId === ex.id;
+                const activeClass = isActive 
+                    ? 'border-violet-400 bg-violet-50 ring-1 ring-violet-400 text-violet-700 shadow-sm' 
+                    : 'border-slate-200 bg-white hover:border-violet-300 text-slate-500 hover:text-slate-700 hover:bg-slate-50';
+                    
+                const html = `
+                    <button class="flex-1 p-2.5 text-left border rounded-xl transition-all ${activeClass} flex flex-col gap-1 min-w-0" onclick="selectExercise('${ex.id}')">
+                        <div class="font-bold text-[11px] uppercase tracking-wider ${isActive ? 'text-violet-600' : 'text-slate-400'}">${ex.title}</div>
+                        <div class="text-[12px] font-medium line-clamp-2 leading-snug truncate whitespace-normal">${ex.desc}</div>
+                    </button>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        window.selectExercise = function(id) {
+            state.exerciseId = id;
+            renderExercises();
+            
+            const exInfo = exercisesMap[state.mode].find(e => e.id === id);
+            
+            document.getElementById('ai-output').innerHTML = `
+                <div class="h-full flex flex-col items-center justify-center text-slate-400 space-y-3">
+                    <i class="fa-solid fa-lightbulb text-5xl text-amber-400 drop-shadow-sm"></i>
+                    <p class="font-medium text-slate-500 text-center px-4 max-w-sm">Mục tiêu: <br><span class="text-violet-600 font-bold">${exInfo.fullDesc}</span></p>
+                </div>`;
+            document.getElementById('eval-empty').classList.remove('hidden');
+            document.getElementById('score-text').textContent = '0';
+            document.getElementById('score-ring').style.strokeDashoffset = '251.2';
+        }
+
+        function renderInputs() {
+            const container = document.getElementById('input-container');
+            container.innerHTML = '';
+            const activeInputs = modes[state.mode];
+            
+            activeInputs.forEach(inp => {
+                const val = state.inputs[inp.id] || '';
+                const html = `
+                    <div class="flex-1 flex flex-col border border-slate-200 rounded-xl overflow-hidden ${inp.colors.border} focus-within:ring-2 transition-all min-h-0 bg-white shadow-sm hover:shadow-md">
+                        <div class="${inp.colors.bg} px-3 py-1.5 flex items-center justify-between shrink-0 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <span class="${inp.colors.dot} w-2 h-2 rounded-full shadow-sm"></span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider ${inp.colors.text}">${inp.label}</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-medium">${inp.desc}</span>
+                        </div>
+                        <textarea 
+                            data-id="${inp.id}"
+                            class="flex-1 w-full p-3 resize-none bg-transparent text-[14px] focus:outline-none custom-scrollbar text-slate-700 placeholder-slate-400 min-h-0" 
+                            placeholder="${inp.placeholder}"
+                            oninput="updateInput('${inp.id}', this.value)"
+                        >${val}</textarea>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        window.updateInput = function(id, val) {
+            state.inputs[id] = val;
+        }
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const newMode = e.currentTarget.dataset.mode;
+                if(state.mode === newMode) return;
+                
+                state.mode = newMode;
+                state.exerciseId = exercisesMap[newMode][0].id;
+                state.inputs = {}; 
+                
+                document.querySelectorAll('.mode-btn').forEach(b => {
+                    b.classList.remove('text-white', 'bg-violet-500', 'shadow-md');
+                    b.classList.add('text-slate-500', 'hover:text-slate-700', 'hover:bg-white/50');
+                });
+                
+                const activeBtn = document.querySelector(`[data-mode="${newMode}"]`);
+                activeBtn.classList.add('text-white', 'bg-violet-500', 'shadow-md');
+                activeBtn.classList.remove('text-slate-500', 'hover:text-slate-700', 'hover:bg-white/50');
+                
+                document.getElementById('mode-label-text').textContent = modeLabels[newMode];
+                
+                renderExercises();
+                renderInputs();
+                selectExercise(state.exerciseId);
+            });
+        });
+
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const activeInputs = modes[state.mode];
+            let totalScore = 0;
+            let missingCount = 0;
+            let feedback = [];
+
+            // Dynamic Score Calculation Based on Actual Length
+            activeInputs.forEach(inp => {
+                const text = (state.inputs[inp.id] || '').trim();
+                const words = text.split(/\\s+/).filter(w => w.length > 0).length;
+                
+                let fieldScore = 0;
+                if (words === 0) {
+                    missingCount++;
+                    feedback.push({ type: 'warning', msg: `Thiếu nội dung ở ô "${inp.label}". Hãy điền vào nhé!` });
+                } else if (words <= 2) {
+                    fieldScore = 30; // 30% points for being too short
+                    feedback.push({ type: 'warning', msg: `Nội dung "${inp.label}" quá ngắn (${words} từ). AI cần thêm chi tiết.` });
+                } else if (words <= 5) {
+                    fieldScore = 75; // 75% points
+                    feedback.push({ type: 'success', msg: `Nội dung "${inp.label}" ổn, nhưng có thể viết dài thêm 1 xíu.` });
+                } else {
+                    fieldScore = 100; // 100% points
+                    feedback.push({ type: 'success', msg: `Nội dung "${inp.label}" cực kỳ đầy đủ thông tin!` });
+                }
+                totalScore += fieldScore;
+            });
+
+            let finalScore = Math.floor(totalScore / activeInputs.length);
+            
+            if (missingCount > 0) {
+                finalScore = Math.floor(finalScore * 0.7); // 30% global penalty if missing a field
+            }
+
+            finalScore = Math.max(0, finalScore); // Ensure it doesn't drop below 0
+
+            const aiOutput = document.getElementById('ai-output');
+            aiOutput.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-violet-600 font-bold gap-3"><i class="fa-solid fa-circle-notch fa-spin text-3xl"></i> <span>AI đang phân tích và tạo kết quả...</span></div>`;
+            document.getElementById('eval-empty').classList.remove('hidden');
+
+            // Simulate processing time
+            setTimeout(() => {
+                generateAndShowResponse(finalScore, feedback, activeInputs);
+            }, 800);
+        });
+
+        async function generateAndShowResponse(score, feedback, activeInputs) {
+            // First, update the evaluation UI
+            showEvaluation(score, feedback);
+
+            const apiKey = localStorage.getItem('gemini_api_key');
+            if (apiKey) {
+                // Call Real Gemini API
+                try {
+                    let promptString = `Bạn là một trợ lý AI phân tích ngôn ngữ. Dưới đây là câu lệnh prompt của người dùng (tập trung vào đối tượng học sinh lớp 8):\n`;
+                    activeInputs.forEach(inp => {
+                        promptString += `- Yêu cầu phần [${inp.label}]: "${state.inputs[inp.id] || ''}"\n`;
+                    });
+                    promptString += `Hãy viết một phản hồi thông minh, đúng yêu cầu định dạng ở trên, dựa trên nội dung được cung cấp. Không cần giải thích thêm.`;
+                    
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: promptString }] }] })
+                    });
+                    
+                    if (!res.ok) throw new Error('API Key không hợp lệ hoặc lỗi mạng');
+                    const data = await res.json();
+                    const aiText = data.candidates[0].content.parts[0].text;
+                    typeResponse(`[💡 Sinh bởi AI Thật - Gemini API]\n\n` + aiText);
+                } catch (e) {
+                    typeResponse(`[⚠️ Lỗi gọi AI Thật: ${e.message}]\nAI sẽ tự động chuyển về chế độ Giả Lập.\n\n` + generateSmartMockResponse(score));
+                }
+            } else {
+                // Use Smart Mock AI that reads inputs
+                typeResponse(generateSmartMockResponse(score));
+            }
+        }
+
+        function generateSmartMockResponse(score) {
+            const task = (state.inputs.task || '').trim();
+            const context = (state.inputs.context || '').trim();
+            const format = (state.inputs.format || '').trim();
+
+            let res = `[🤖 Chế độ AI Giả Lập]\n(Ứng dụng đang phản hồi dựa trên các từ khóa bạn nhập. Để trải nghiệm AI thật sự thông minh, hãy cấu hình API Key ở góc trên màn hình!)\n\n`;
+            
+            if (score === 0) {
+                return res + `Bạn chưa nhập chữ nào cả, tôi không thể tưởng tượng ra kết quả được. Hãy điền chữ vào các ô trống nhé!`;
+            }
+
+            res += `Đã nhận lệnh! Dưới đây là kết quả dựa trên các dữ liệu của bạn:\n`;
+            
+            if (state.mode === 'basic') {
+                res += `- Hành động bạn muốn AI làm: **${task || '(Trống)'}**\n`;
+                res += `- Đối tượng xử lý: **${context || '(Trống)'}**\n\n`;
+                
+                if (score <= 50) {
+                    res += `⚠️ Vì lệnh của bạn khá ngắn, tôi chỉ có thể làm thử chung chung:\n👉 Đang thực hiện hành động "${task || '...'}" với đối tượng là "${context || '...'}".`;
+                } else {
+                    res += `✨ Kết quả phân tích:\nTôi đã hiểu bạn muốn "${task}". Liên quan đến "${context}", đây là một yêu cầu rất thú vị! (Đây là mô phỏng, nếu bạn dùng AI Thật, đoạn này sẽ là nội dung văn bản hoàn chỉnh).`;
+                }
+            } else {
+                res += `- Nhiệm vụ cốt lõi: **${task || '(Trống)'}**\n`;
+                res += `- Dữ liệu đầu vào: **${context || '(Trống)'}**\n`;
+                res += `- Yêu cầu tiêu chuẩn: **${format || '(Trống)'}**\n\n`;
+
+                if (score <= 50) {
+                    res += `⚠️ Lệnh còn thiếu nhiều chi tiết. Tôi sẽ thử kết hợp các từ của bạn lại:\n👉 Cố gắng xử lý dữ liệu "${context || '...'}" để thực hiện việc "${task || '...'}" dưới định dạng "${format || '...'}".`;
+                } else {
+                    if (state.exerciseId === 's1') {
+                        res += `🥗 Đề xuất thực đơn theo phong cách "${format}":\n- Dựa trên yêu cầu ${task}, đây là gợi ý liên quan đến ${context}.\n- Món chính: Nấu ${context} theo kiểu mới.\n- Chúc bạn ngon miệng!`;
+                    } else if (state.exerciseId === 's2') {
+                        res += `🥤 Bài Review theo chuẩn (${format}):\nOMG mọi người ơi! Hôm nay tui đi trải nghiệm ${context}. Phải nói là đáp ứng đúng mục tiêu ${task} luôn 💯!`;
+                    } else {
+                        res += `✨ Kết quả (${format}):\nNội dung về ${context} đã được phân tích theo đúng tiêu chí của việc ${task}. Bạn đã đưa ra tiêu chuẩn rất rõ ràng!`;
+                    }
+                }
+            }
+            return res;
+        }
+
+        function typeResponse(text) {
+            const aiOutput = document.getElementById('ai-output');
+            aiOutput.innerHTML = '';
+            const p = document.createElement('div');
+            p.className = 'typing-cursor';
+            aiOutput.appendChild(p);
+            
+            let i = 0;
+            // Type faster so kids don't get bored
+            function typeChar() {
+                if(i < text.length) {
+                    p.innerHTML = text.substring(0, i+1).replace(/\\n/g, '<br/>');
+                    i += Math.floor(Math.random() * 3) + 2; 
+                    aiOutput.scrollTop = aiOutput.scrollHeight;
+                    requestAnimationFrame(typeChar);
+                } else {
+                    p.innerHTML = text.replace(/\\n/g, '<br/>');
+                    p.classList.remove('typing-cursor');
+                }
+            }
+            typeChar();
+        }
+
+        function showEvaluation(score, feedbackItems) {
+            document.getElementById('eval-empty').classList.add('hidden');
+            
+            const ring = document.getElementById('score-ring');
+            const scoreText = document.getElementById('score-text');
+            const circumference = 251.2;
+            const offset = circumference - (score / 100) * circumference;
+            
+            setTimeout(() => {
+                ring.style.strokeDashoffset = offset;
+            }, 50);
+
+            let currentNum = 0;
+            const timer = setInterval(() => {
+                currentNum += 2;
+                if(currentNum >= score) {
+                    currentNum = score;
+                    clearInterval(timer);
+                }
+                scoreText.textContent = currentNum;
+            }, 10);
+
+            let color = '#f43f5e'; // rose-500
+            if (score >= 80) {
+                color = '#10b981'; // emerald-500
+            } else if (score >= 50) {
+                color = '#f59e0b'; // amber-500
+            }
+            
+            ring.style.stroke = color;
+            scoreText.style.color = color;
+
+            const list = document.getElementById('feedback-list');
+            list.innerHTML = '';
+            
+            feedbackItems.forEach(item => {
+                const icon = item.type === 'success' 
+                    ? '<i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 text-base"></i>' 
+                    : '<i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5 shrink-0 text-base"></i>';
+                list.innerHTML += `<li class="flex gap-2 items-start">${icon} <span class="leading-snug">${item.msg}</span></li>`;
+            });
+        }
+
+        // Init
+        renderExercises();
+        renderInputs();
+        selectExercise(state.exerciseId);
+    </script>
+</body>
+</html>
