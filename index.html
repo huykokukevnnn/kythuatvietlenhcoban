@@ -144,14 +144,15 @@
     <script>
         const inputDefinitions = {
             task: { id: 'task', label: 'Nhiệm Vụ (Task)', placeholder: 'AI cần làm gì? VD: Lên thời gian biểu...', desc: 'Làm việc gì?', colors: { border: 'focus-within:border-emerald-400 focus-within:ring-emerald-400/30', dot: 'bg-emerald-500', bg: 'bg-emerald-50', text: 'text-emerald-700' } },
-            context: { id: 'context', label: 'Đầu Vào (Input)', placeholder: 'Cung cấp thông tin... VD: Học sinh lớp 8...', desc: 'Thông tin cơ sở?', colors: { border: 'focus-within:border-sky-400 focus-within:ring-sky-400/30', dot: 'bg-sky-500', bg: 'bg-sky-50', text: 'text-sky-700' } },
-            format: { id: 'format', label: 'Tiêu Chuẩn (Format)', placeholder: 'Kết quả trông như thế nào? VD: Dạng bảng, hài hước...', desc: 'Yêu cầu kết quả?', colors: { border: 'focus-within:border-fuchsia-400 focus-within:ring-fuchsia-400/30', dot: 'bg-fuchsia-500', bg: 'bg-fuchsia-50', text: 'text-fuchsia-700' } }
+            context: { id: 'context', label: 'Đầu Vào (Input)', placeholder: 'Cung cấp thông tin... VD: Hôm nay nhà còn gà và rau...', desc: 'Thông tin cơ sở?', colors: { border: 'focus-within:border-sky-400 focus-within:ring-sky-400/30', dot: 'bg-sky-500', bg: 'bg-sky-50', text: 'text-sky-700' } },
+            format: { id: 'format', label: 'Tiêu Chuẩn (Format)', placeholder: 'Kết quả trông như thế nào? VD: Dạng bảng, hài hước...', desc: 'Yêu cầu kết quả?', colors: { border: 'focus-within:border-fuchsia-400 focus-within:ring-fuchsia-400/30', dot: 'bg-fuchsia-500', bg: 'bg-fuchsia-50', text: 'text-fuchsia-700' } },
+            role: { id: 'role', label: 'Vai Trò (Role)', placeholder: 'AI đóng vai ai? VD: Chuyên gia tâm lý học đường...', desc: 'Đóng vai ai?', colors: { border: 'focus-within:border-amber-400 focus-within:ring-amber-400/30', dot: 'bg-amber-500', bg: 'bg-amber-50', text: 'text-amber-700' } }
         };
 
         const modes = {
             basic: [
                 {...inputDefinitions.task, label: 'Hành Động', desc: 'Làm việc gì?'}, 
-                {...inputDefinitions.context, label: 'Đối Tượng', desc: 'Làm với cái gì?'}
+                {...inputDefinitions.role, label: 'Vai Trò', desc: 'AI đóng vai ai?'}
             ],
             standard: [
                 {...inputDefinitions.task, label: 'Nhiệm Vụ', desc: 'Làm việc gì?'}, 
@@ -162,14 +163,14 @@
 
         const exercisesMap = {
             basic: [
-                { id: 'b1', title: 'Đề 1', desc: 'Giải thích Hố đen vũ trụ', fullDesc: 'Nhờ AI giải thích khái niệm "Hố đen vũ trụ" sao cho dễ hiểu nhất.' },
-                { id: 'b2', title: 'Đề 2', desc: 'Tóm tắt Thỏ và Rùa', fullDesc: 'Nhờ AI tóm tắt ngắn gọn câu chuyện ngụ ngôn Thỏ và Rùa.' },
-                { id: 'b3', title: 'Đề 3', desc: 'Dịch thuật tiếng Anh', fullDesc: 'Nhờ AI dịch câu "Hello world" sang tiếng Việt.' }
+                { id: 'b1', title: 'Đề 1: Giải tỏa áp lực', desc: 'Tìm cách giúp học sinh xả stress', fullDesc: 'Sắp tới kỳ thi cuối học kỳ, áp lực điểm số khiến nhiều bạn học sinh lớp 8 cảm thấy lo lắng và mệt mỏi, em hãy tìm cách để giúp các bạn giải tỏa căng thẳng.' },
+                { id: 'b2', title: 'Đề 2: Vượt qua tự ti', desc: 'Lời khuyên hòa nhập lớp mới', fullDesc: 'Bước vào năm học lớp 8, nhiều bạn học sinh cảm thấy lo lắng khi phải chuyển sang lớp mới, khó kết bạn, hoặc cảm thấy tự ti khi thấy các bạn xung quanh ai cũng giỏi giang, năng nổ. Em hãy tìm những lời khuyên để giúp bạn tự tin, hòa nhập hơn.' },
+                { id: 'b3', title: 'Đề 3: Cổ vũ mùa thi', desc: 'Thiết kế thiệp/sticker cổ động', fullDesc: 'Hãy cùng nhau thiết kế một "Tấm thiệp/Sticker cổ động mùa thi" để tặng cho các bạn trong lớp trước ngày thi cuối kỳ.' }
             ],
             standard: [
-                { id: 's1', title: 'Đề 1', desc: 'Lên thực đơn bữa tối', fullDesc: 'Lên thực đơn bữa tối với trứng, cà chua. Yêu cầu: Nhanh gọn.' },
-                { id: 's2', title: 'Đề 2', desc: 'Review Trà Sữa', fullDesc: 'Viết bài review Trà sữa matcha trân châu đường đen. Yêu cầu: Ngôn ngữ Gen Z, hài hước, nhiều icon.' },
-                { id: 's3', title: 'Đề 3', desc: 'Từ vựng tiếng Anh', fullDesc: 'Tạo danh sách 5 từ vựng tiếng Anh chủ đề "Trường học" kèm giải nghĩa.' }
+                { id: 's1', title: 'Đề 1: Bữa tối bất ngờ', desc: 'Gợi ý nấu ăn từ nguyên liệu có sẵn', fullDesc: 'Hôm nay bố mẹ đi làm về muộn, em muốn vào bếp tự tay chuẩn bị một bữa tối thật ngon để cả nhà bất ngờ nhưng chưa biết phải làm gì. Hãy thử hỏi AI nên làm gì với những nguyên liệu em đang có.' },
+                { id: 's2', title: 'Đề 2: Đánh giá trà sữa', desc: 'Viết bài review quán trà sữa', fullDesc: 'Nhóm của em vừa được uống thử một quán trà sữa mới mở gần trường siêu ngon. Em hãy viết một bài đánh giá thật hay.' },
+                { id: 's3', title: 'Đề 3: Học từ vựng', desc: 'Kẻ bảng từ vựng Môi trường', fullDesc: 'Tuần sau lớp em có bài kiểm tra 15 phút tiếng Anh về chủ đề Môi trường. Có quá nhiều từ mới dài và khó nhớ, hãy tìm cách để liệt kê thành dạng bảng để dễ học hơn.' }
             ]
         };
 
