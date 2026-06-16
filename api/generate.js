@@ -4,27 +4,32 @@ export default async function handler(req, res) {
     }
 
     const { prompt } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GROK_API_KEY;
 
     if (!apiKey) {
-        return res.status(500).json({ error: 'Chưa cài đặt biến môi trường GEMINI_API_KEY trên Vercel' });
+        return res.status(500).json({ error: 'Chưa cài đặt biến môi trường GROK_API_KEY trên Vercel' });
     }
 
     try {
-        // Đổi sang mô hình gemini-pro (ổn định nhất và hỗ trợ 100% các tài khoản/khu vực)
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+        const response = await fetch('https://api.x.ai/v1/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({ 
+                model: 'grok-beta',
+                messages: [{ role: 'user', content: prompt }]
+            })
         });
         
         const data = await response.json();
         
         if (!response.ok) {
-            throw new Error(data.error?.message || 'Lỗi từ Gemini API');
+            throw new Error(data.error?.message || 'Lỗi từ Grok API');
         }
 
-        return res.status(200).json({ text: data.candidates[0].content.parts[0].text });
+        return res.status(200).json({ text: data.choices[0].message.content });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }

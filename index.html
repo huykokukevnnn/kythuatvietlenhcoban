@@ -354,7 +354,7 @@
                 document.getElementById('ai-status-badge').innerHTML = '🤖 AI Giả Lập';
                 document.getElementById('ai-status-badge').className = 'text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-1 rounded-md border border-slate-200';
                 
-                typeResponse(`[⚠️ ${e.message}]\nAI tự động chuyển về chế độ Giả Lập. (Vui lòng điền GEMINI_API_KEY trong Vercel Environment Variables để dùng AI Thật).\n\n` + generateSmartMockResponse(score));
+                typeResponse(`[⚠️ ${e.message}]\nAI tự động chuyển về chế độ Giả Lập. (Vui lòng điền GROK_API_KEY trong Vercel Environment Variables để dùng AI Thật).\n\n` + generateSmartMockResponse(score));
             }
         }
 
